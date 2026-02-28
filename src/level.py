@@ -2,6 +2,7 @@
 Level - Level management and loading
 """
 
+import pygame
 import json
 import os
 from config.settings import *

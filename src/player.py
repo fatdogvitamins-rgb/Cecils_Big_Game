@@ -51,7 +51,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.current_animation = 'idle'
 
-    def handle_input(self, keys: pygame.key.ScalarKeyType):
+    def handle_input(self, keys):
         """
         Handle keyboard input for player movement
 

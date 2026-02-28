@@ -204,19 +204,19 @@ class Menu:
         Handle menu input
 
         Args:
-            keys: Pygame keys dict
+            keys: Pygame keys tuple from pygame.key.get_pressed()
 
         Returns:
             Action string or None
         """
         # Up/Down navigation
-        if keys.get_pressed()[pygame.K_UP]:
+        if keys[pygame.K_UP]:
             self.selected_button = (self.selected_button - 1) % len(self.buttons)
-        elif keys.get_pressed()[pygame.K_DOWN]:
+        elif keys[pygame.K_DOWN]:
             self.selected_button = (self.selected_button + 1) % len(self.buttons)
 
         # Select button
-        if keys.get_pressed()[pygame.K_SPACE] or keys.get_pressed()[pygame.K_RETURN]:
+        if keys[pygame.K_SPACE] or keys[pygame.K_RETURN]:
             return self.buttons[self.selected_button]['action']
 
         return None

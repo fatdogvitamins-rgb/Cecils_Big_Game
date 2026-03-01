@@ -14,6 +14,7 @@ from src.sprite_manager import SpriteManager
 from src.tinkercad_editor import CharacterDesigner
 from src.block_editor import BlockEditor
 from src.audio_manager import AudioManager
+from src.transitions import TransitionManager
 
 
 class Game:
@@ -32,6 +33,9 @@ class Game:
 
         # Initialize audio manager
         self.audio_manager = AudioManager()
+
+        # Initialize transition manager
+        self.transition_manager = TransitionManager()
 
         # Initialize sprite manager
         self.sprite_manager = SpriteManager()
@@ -72,6 +76,10 @@ class Game:
         if level_number >= NUM_LEVELS:
             self.end_game()
             return
+
+        # Start fade in transition
+        transition = self.transition_manager.create_level_transition(600)
+        transition.start(fade_out=False)  # Fade in from black
 
         self.level = Level(level_number, self.sprite_manager)
         self.player = Player(self.level.player_start_x, self.level.player_start_y, self.sprite_manager)
@@ -130,6 +138,9 @@ class Game:
 
     def update(self):
         """Update game logic"""
+        # Update transitions
+        self.transition_manager.update()
+
         if self.state == STATE_MENU:
             # Menu input handled in draw
             pass
@@ -198,10 +209,17 @@ class Game:
             # Wait for input, then load next level
             keys = pygame.key.get_pressed()
             if keys[pygame.K_SPACE] or keys[pygame.K_RETURN]:
+                # Start fade out transition
+                transition = self.transition_manager.create_level_transition(500)
+                transition.start(fade_out=True)  # Fade to black
+
                 self.current_level_number += 1
                 if self.current_level_number >= NUM_LEVELS:
+                    # Game complete - go to menu
                     self.end_game()
                 else:
+                    # Give transition time to complete, then load level
+                    pygame.time.wait(300)  # Wait 300ms before loading
                     self.load_level(self.current_level_number)
                     self.state = STATE_PLAYING
 
@@ -289,6 +307,9 @@ class Game:
             restart_text = font_medium.render("Press SPACE to retry or ENTER for menu", True, COLOR_CYAN)
             restart_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100))
             self.screen.blit(restart_text, restart_rect)
+
+        # Draw any active transitions (on top of everything)
+        self.transition_manager.draw(self.screen)
 
         pygame.display.flip()
 

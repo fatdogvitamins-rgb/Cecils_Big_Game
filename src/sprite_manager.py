@@ -51,7 +51,7 @@ class SpriteManager:
 
     def create_placeholder_sprite(self, width: int, height: int, color: Tuple[int, int, int] = (200, 200, 200)) -> pygame.Surface:
         """
-        Create a placeholder colored rectangle sprite
+        Create a 3D-style placeholder sprite with shading and highlights
 
         Args:
             width: Width of sprite
@@ -59,16 +59,32 @@ class SpriteManager:
             color: RGB color tuple
 
         Returns:
-            pygame.Surface with colored rectangle
+            pygame.Surface with 3D-styled rectangle
         """
         surface = pygame.Surface((width, height), pygame.SRCALPHA)
+
+        # Draw main body with gradient shading effect
         pygame.draw.rect(surface, color, (0, 0, width, height))
-        pygame.draw.rect(surface, (100, 100, 100), (0, 0, width, height), 2)
+
+        # Add darker shadow on bottom/right for 3D effect
+        shadow_color = tuple(max(0, c - 80) for c in color)
+        pygame.draw.line(surface, shadow_color, (0, height - 2), (width, height - 2), 2)
+        pygame.draw.line(surface, shadow_color, (width - 2, 0), (width - 2, height), 2)
+
+        # Add lighter highlight on top/left for 3D effect
+        highlight_color = tuple(min(255, c + 100) for c in color)
+        pygame.draw.line(surface, highlight_color, (0, 0), (width, 0), 2)
+        pygame.draw.line(surface, highlight_color, (0, 0), (0, height), 2)
+
+        # Draw border
+        border_color = tuple(c // 2 for c in color)
+        pygame.draw.rect(surface, border_color, (0, 0, width, height), 2)
+
         return surface
 
     def create_animated_sprite(self, width: int, height: int, frames: int = 4, color: Tuple[int, int, int] = (100, 150, 255)) -> List[pygame.Surface]:
         """
-        Create an animated sprite (for testing/placeholder)
+        Create an animated 3D-style sprite with shading
 
         Args:
             width: Width of each frame
@@ -82,13 +98,30 @@ class SpriteManager:
         frame_list = []
         for i in range(frames):
             surface = pygame.Surface((width, height), pygame.SRCALPHA)
-            # Create simple animation by varying shading
-            shade = 100 + int((i / frames) * 100)
-            color_frame = (shade, shade + 50, 255)
+            # Create animation by varying brightness
+            shade = 80 + int((i / frames) * 100)
+            color_frame = (shade, shade + 50, 200)
+
+            # Draw main body
             pygame.draw.rect(surface, color_frame, (0, 0, width, height))
-            pygame.draw.rect(surface, (100, 100, 100), (0, 0, width, height), 2)
-            # Add simple animation indicator
-            pygame.draw.circle(surface, (255, 255, 0), (width // 2, height // 4 + i), 4)
+
+            # Add 3D shading
+            shadow_color = tuple(max(0, c - 60) for c in color_frame)
+            pygame.draw.line(surface, shadow_color, (0, height - 2), (width, height - 2), 2)
+            pygame.draw.line(surface, shadow_color, (width - 2, 0), (width - 2, height), 2)
+
+            highlight_color = tuple(min(255, c + 80) for c in color_frame)
+            pygame.draw.line(surface, highlight_color, (0, 0), (width, 0), 2)
+            pygame.draw.line(surface, highlight_color, (0, 0), (0, height), 2)
+
+            # Draw border
+            border_color = tuple(c // 2 for c in color_frame)
+            pygame.draw.rect(surface, border_color, (0, 0, width, height), 2)
+
+            # Add animation indicator (small dot showing animation state)
+            indicator_color = (255, 200 + int((i / frames) * 55), 0)
+            pygame.draw.circle(surface, indicator_color, (width // 2, height // 3), 3)
+
             frame_list.append(surface)
 
         return frame_list

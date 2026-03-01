@@ -25,6 +25,7 @@ class Game:
         self.running = True
         self.state = STATE_MENU
         self.current_level_number = START_LEVEL
+        self.fullscreen = False
 
         # Initialize sprite manager
         self.sprite_manager = SpriteManager()
@@ -42,6 +43,15 @@ class Game:
         self.current_level_number = START_LEVEL
         self.load_level(self.current_level_number)
         self.state = STATE_PLAYING
+
+    def toggle_fullscreen(self):
+        """Toggle fullscreen mode"""
+        self.fullscreen = not self.fullscreen
+        if self.fullscreen:
+            self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.display.set_caption("Cecil's Big Game - Platform Adventure")
 
     def load_level(self, level_number: int):
         """
@@ -64,8 +74,16 @@ class Game:
                 self.running = False
 
             if event.type == pygame.KEYDOWN:
+                # Fullscreen toggle (F key)
+                if event.key == pygame.K_f:
+                    self.toggle_fullscreen()
+
                 if self.state == STATE_MENU:
-                    if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_UP:
+                        self.menu.selected_button = (self.menu.selected_button - 1) % len(self.menu.buttons)
+                    elif event.key == pygame.K_DOWN:
+                        self.menu.selected_button = (self.menu.selected_button + 1) % len(self.menu.buttons)
+                    elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         action = self.menu.buttons[self.menu.selected_button]['action']
                         if action == 'start':
                             self.start_new_game()
@@ -148,9 +166,6 @@ class Game:
 
         if self.state == STATE_MENU:
             self.menu.draw(self.screen)
-            # Handle menu input
-            keys = pygame.key.get_pressed()
-            self.menu.handle_input(keys)
 
         elif self.state == STATE_PLAYING:
             # Draw level

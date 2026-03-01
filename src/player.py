@@ -129,19 +129,26 @@ class Player(pygame.sprite.Sprite):
 
     def update_animation(self):
         """Update player animation"""
+        # Determine animation state
         if self.on_ground:
             if self.velocity_x != 0:
-                self.current_animation = 'run'
+                new_animation = 'run'
                 frames = self.run_frames
             else:
-                self.current_animation = 'idle'
+                new_animation = 'idle'
                 frames = self.idle_frames
         elif self.velocity_y < 0:
-            self.current_animation = 'jump'
+            new_animation = 'jump'
             frames = [self.jump_frame]
         else:
-            self.current_animation = 'fall'
+            new_animation = 'fall'
             frames = [self.fall_frame]
+
+        # Reset animation frame if animation state changed
+        if new_animation != self.current_animation:
+            self.current_animation = new_animation
+            self.animation_frame = 0
+            self.animation_counter = 0
 
         # Animate frames
         self.animation_counter += 0.2
@@ -149,7 +156,11 @@ class Player(pygame.sprite.Sprite):
             self.animation_counter = 0
             self.animation_frame = (self.animation_frame + 1) % len(frames)
 
-        self.image = frames[self.animation_frame]
+        if self.animation_frame < len(frames):
+            self.image = frames[self.animation_frame]
+        else:
+            self.animation_frame = 0
+            self.image = frames[0]
 
         # Flip sprite if facing left
         if not self.facing_right:

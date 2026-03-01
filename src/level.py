@@ -208,7 +208,6 @@ class Level:
             surface: Pygame surface to draw on
         """
         # Draw platforms
-        surface.blit(self.platforms, surface)
         for platform in self.platforms:
             surface.blit(platform.image, platform.rect)
 

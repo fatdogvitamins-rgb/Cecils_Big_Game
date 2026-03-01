@@ -172,31 +172,43 @@ class Menu:
         Args:
             surface: Pygame surface to draw on
         """
-        # Draw background
+        # Draw background with gradient-like effect
         surface.fill(COLOR_DARK_GRAY)
 
-        # Draw title
-        title_text = self.font_large.render("CECIL'S BIG GAME", True, COLOR_CYAN)
-        title_rect = title_text.get_rect(center=(self.screen_width // 2, 100))
+        # Add decorative top bar
+        pygame.draw.rect(surface, COLOR_CYAN, (0, 0, self.screen_width, 80))
+
+        # Draw title in the bar
+        title_text = self.font_large.render("CECIL'S BIG GAME", True, COLOR_BLACK)
+        title_rect = title_text.get_rect(center=(self.screen_width // 2, 40))
         surface.blit(title_text, title_rect)
 
-        # Draw subtitle
-        subtitle_text = self.font_small.render("A Pygame Platform Adventure", True, COLOR_LIGHT_GRAY)
-        subtitle_rect = subtitle_text.get_rect(center=(self.screen_width // 2, 200))
+        # Draw subtitle below title
+        subtitle_text = self.font_small.render("Press UP/DOWN to select, ENTER to choose", True, COLOR_LIGHT_GRAY)
+        subtitle_rect = subtitle_text.get_rect(center=(self.screen_width // 2, 250))
         surface.blit(subtitle_text, subtitle_rect)
 
-        # Draw buttons
+        # Draw buttons with better spacing
+        button_width = 350
+        button_height = 70
+        button_x = self.screen_width // 2 - button_width // 2
+        button_y_start = 350
+
         for i, button in enumerate(self.buttons):
+            button_y = button_y_start + (i * 100)
+            button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+            button['rect'] = button_rect
+
             button_color = COLOR_YELLOW if i == self.selected_button else COLOR_WHITE
-            button_bg_color = COLOR_DARK_GRAY if i == self.selected_button else (50, 50, 50)
+            button_bg_color = (100, 100, 0) if i == self.selected_button else (50, 50, 50)
 
             # Button background
-            pygame.draw.rect(surface, button_bg_color, button['rect'])
-            pygame.draw.rect(surface, button_color, button['rect'], 3)
+            pygame.draw.rect(surface, button_bg_color, button_rect)
+            pygame.draw.rect(surface, button_color, button_rect, 3)
 
             # Button text
             button_text = self.font_medium.render(button['text'], True, button_color)
-            button_text_rect = button_text.get_rect(center=button['rect'].center)
+            button_text_rect = button_text.get_rect(center=button_rect.center)
             surface.blit(button_text, button_text_rect)
 
     def handle_input(self, keys):

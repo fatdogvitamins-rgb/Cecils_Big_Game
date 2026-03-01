@@ -179,10 +179,11 @@ class CharacterDesigner:
                     self.remove_selected()
                 elif event.key == pygame.K_c:
                     self.create_default_character()
-                elif event.key == pygame.K_s:
+                elif event.key == pygame.K_RETURN or event.key == pygame.K_p:
+                    # P key or ENTER to save (instead of S to avoid conflict)
                     self.save_design()
 
-        # Rotation controls
+        # Rotation controls (hold keys)
         if keys[pygame.K_LEFT]:
             self.rotation_y -= 2
         if keys[pygame.K_RIGHT]:
@@ -192,7 +193,7 @@ class CharacterDesigner:
         if keys[pygame.K_DOWN]:
             self.rotation_x += 2
 
-        # Box manipulation
+        # Box movement
         if self.selected_box:
             if keys[pygame.K_w]:
                 self.selected_box.y -= 2
@@ -265,13 +266,24 @@ class CharacterDesigner:
         pygame.draw.polygon(surface, face_color, front_face)
 
     def draw_controls(self, surface: pygame.Surface):
-        """Draw control instructions"""
+        """Draw control instructions and buttons"""
+        # Draw SAVE button prominently
+        save_button_rect = pygame.Rect(900, 150, 280, 50)
+        pygame.draw.rect(surface, (0, 200, 0), save_button_rect)
+        pygame.draw.rect(surface, COLOR_WHITE, save_button_rect, 3)
+        save_text = self.font_medium.render("PRESS P: SAVE CHARACTER", True, COLOR_BLACK)
+        text_rect = save_text.get_rect(center=save_button_rect.center)
+        surface.blit(save_text, text_rect)
+
+        # Draw other controls
         controls = [
-            "CONTROLS:",
-            "Arrow Keys - Rotate model",
-            "A - Add box  |  D - Remove box  |  C - Reset",
-            "W/S - Move box  |  E/Q - Resize",
-            "SPACEBAR - Export to sprite  |  ESC - Exit",
+            "ARROW KEYS - Rotate",
+            "A - Add Box",
+            "D - Remove Box",
+            "C - Reset Design",
+            "W/S - Move Selected Box",
+            "E/Q - Resize Box",
+            "ESC - Exit to Menu",
         ]
 
         y = 620

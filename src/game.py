@@ -50,6 +50,7 @@ class Game:
         self.block_editor = BlockEditor(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.block_editor.create_example_ai()
         self.fps_clock = pygame.time.Clock()
+        self.current_events = []  # Store events for passing to editors
 
     def start_new_game(self):
         """Start a new game"""
@@ -86,7 +87,11 @@ class Game:
 
     def handle_events(self):
         """Handle game events"""
+        self.current_events = []  # Reset events each frame
+
         for event in pygame.event.get():
+            self.current_events.append(event)  # Store for editors
+
             if event.type == pygame.QUIT:
                 self.running = False
 
@@ -148,13 +153,13 @@ class Game:
         elif self.state == STATE_EDITOR:
             # Character designer update
             keys = pygame.key.get_pressed()
-            self.character_designer.handle_input(keys, [])
+            self.character_designer.handle_input(keys, self.current_events)
 
         elif self.state == 'block_editor':
             # Block editor update
             mouse_pos = pygame.mouse.get_pos()
             mouse_buttons = pygame.mouse.get_pressed()
-            self.block_editor.handle_input(mouse_pos, mouse_buttons, [])
+            self.block_editor.handle_input(mouse_pos, mouse_buttons, self.current_events)
 
         elif self.state == STATE_PLAYING:
             # Get input

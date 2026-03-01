@@ -38,6 +38,8 @@ class Enemy(pygame.sprite.Sprite):
         self.patrol_direction = 1
         self.health = 1
         self.is_alive = True
+        self.on_ground = True
+        self.ai_engine = None  # Will be set later
         self.animation_frame = 0
         self.animation_counter = 0
 
@@ -53,6 +55,8 @@ class Enemy(pygame.sprite.Sprite):
             pygame.draw.circle(self.image, (0, 0, 0), (2 * width // 3, height // 3), 3)
 
         self.rect = self.image.get_rect(topleft=(x, y))
+        self._last_player = None  # For AIEngine callbacks
+        self._last_platforms = None  # For AIEngine callbacks
 
     def update(self, player=None, platforms=None):
         """
@@ -65,12 +69,21 @@ class Enemy(pygame.sprite.Sprite):
         if not self.is_alive:
             return
 
-        if self.ai_type == "patrol":
-            self.patrol_horizontal()
-        elif self.ai_type == "chase" and player:
-            self.chase_player(player)
-        elif self.ai_type == "patrol_vertical":
-            self.patrol_vertical()
+        # Store player reference for use in AIEngine callbacks
+        self._last_player = player
+        self._last_platforms = platforms
+
+        # Use AIEngine if available
+        if self.ai_engine:
+            self.ai_engine.update(player, platforms)
+        else:
+            # Fallback to legacy AI system
+            if self.ai_type == "patrol":
+                self.patrol_horizontal()
+            elif self.ai_type == "chase" and player:
+                self.chase_player(player)
+            elif self.ai_type == "patrol_vertical":
+                self.patrol_vertical()
 
         # Update position
         self.x += self.velocity_x
@@ -117,6 +130,55 @@ class Enemy(pygame.sprite.Sprite):
             self.ai_type = "patrol"
             self.velocity_x = 0
             self.velocity_y = 0
+
+    def patrol(self):
+        """Patrol back and forth (alias for patrol_horizontal)"""
+        self.patrol_horizontal()
+
+    def chase_mode(self):
+        """Enter chase mode - used by AIEngine"""
+        # Directly chase the stored player reference
+        if hasattr(self, '_last_player') and self._last_player:
+            self.chase_player(self._last_player)
+
+    def can_see_player(self, player=None, range=200):
+        """
+        Check if enemy can see player
+
+        Args:
+            player: Player object (optional, will be passed by AIEngine)
+            range: Visibility range in pixels
+
+        Returns:
+            True if player is visible and within range
+        """
+        # This is called by AIEngine which passes player in update()
+        # But we need to handle the case where player isn't passed
+        # For now, store player reference when update is called
+        if not hasattr(self, '_last_player'):
+            return False
+
+        player = self._last_player
+        if not player:
+            return False
+
+        dx = player.x - self.x
+        dy = player.y - self.y
+        distance = math.sqrt(dx**2 + dy**2)
+
+        # Can see if within range and not blocked
+        return distance < range
+
+    def jump(self):
+        """Make enemy jump"""
+        if self.on_ground:
+            self.velocity_y = -10
+            self.on_ground = False
+
+    def attack(self):
+        """Enemy attack action"""
+        # TODO: Implement attack behavior (e.g., projectile, damage, animation)
+        pass
 
     def take_damage(self):
         """Take damage and die if health <= 0"""

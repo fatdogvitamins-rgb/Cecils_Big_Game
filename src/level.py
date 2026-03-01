@@ -9,6 +9,7 @@ from config.settings import *
 from src.platform import PlatformGroup
 from src.enemy import EnemyGroup, Enemy
 from src.sprite_manager import SpriteManager
+from src.ai_engine import AIEngine, AIType
 
 
 class Level:
@@ -121,8 +122,9 @@ class Level:
         # Goal platform
         self.platforms.create_platform(1100, 300, 120, 20, self.sprite_manager)
 
-        # Simple enemy
-        self.enemies.create_enemy(400, 550, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        # Simple enemy with rule-based AI
+        enemy = self.enemies.create_enemy(400, 550, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        enemy.ai_engine = AIEngine(enemy, AIType.RULE_BASED)
 
         # Goal
         self.goal = pygame.Rect(1100, 250, 120, 50)
@@ -148,9 +150,12 @@ class Level:
         # Final platform
         self.platforms.create_platform(1100, 200, 120, 20, self.sprite_manager)
 
-        # Enemies
-        self.enemies.create_enemy(300, 550, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
-        self.enemies.create_enemy(900, 400, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
+        # Enemies with different AI types
+        patrol_enemy = self.enemies.create_enemy(300, 550, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        patrol_enemy.ai_engine = AIEngine(patrol_enemy, AIType.RULE_BASED)
+
+        chase_enemy = self.enemies.create_enemy(900, 400, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
+        chase_enemy.ai_engine = AIEngine(chase_enemy, AIType.BEHAVIOR_TREE)
 
         # Goal
         self.goal = pygame.Rect(1100, 150, 120, 50)
@@ -174,10 +179,15 @@ class Level:
         self.platforms.create_platform(1000, 280, 100, 20, self.sprite_manager)
         self.platforms.create_platform(1100, 220, 100, 20, self.sprite_manager)
 
-        # Enemies - Multiple and varied
+        # Enemies - Multiple with varied AI types
         for i in range(3):
-            self.enemies.create_enemy(300 + i * 200, 540, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
-        self.enemies.create_enemy(750, 350, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
+            patrol_enemy = self.enemies.create_enemy(300 + i * 200, 540, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+            # Use different AI types for variety
+            ai_type = [AIType.RULE_BASED, AIType.BEHAVIOR_TREE, AIType.MACHINE_LEARNING][i]
+            patrol_enemy.ai_engine = AIEngine(patrol_enemy, ai_type)
+
+        chase_enemy = self.enemies.create_enemy(750, 350, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
+        chase_enemy.ai_engine = AIEngine(chase_enemy, AIType.MACHINE_LEARNING)
 
         # Goal
         self.goal = pygame.Rect(1100, 170, 100, 50)

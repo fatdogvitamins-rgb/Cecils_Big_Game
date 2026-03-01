@@ -12,6 +12,7 @@ from src.level import Level
 from src.ui import HUD, Menu, PauseMenu
 from src.sprite_manager import SpriteManager
 from src.tinkercad_editor import CharacterDesigner
+from src.block_editor import BlockEditor
 
 
 class Game:
@@ -38,6 +39,8 @@ class Game:
         self.menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.pause_menu = PauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.character_designer = CharacterDesigner(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.block_editor = BlockEditor(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.block_editor.create_example_ai()
         self.fps_clock = pygame.time.Clock()
 
     def start_new_game(self):
@@ -103,6 +106,12 @@ class Game:
                     elif event.key == pygame.K_s:
                         self.character_designer.save_design()
 
+                elif self.state == 'block_editor':
+                    if event.key == pygame.K_ESCAPE:
+                        self.state = STATE_MENU
+                        self.menu.selected_button = 0
+                    elif event.key == pygame.K_s:
+                        self.block_editor.save_ai()
 
                 elif self.state == STATE_PLAYING:
                     if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
@@ -122,6 +131,12 @@ class Game:
             # Character designer update
             keys = pygame.key.get_pressed()
             self.character_designer.handle_input(keys, [])
+
+        elif self.state == 'block_editor':
+            # Block editor update
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_buttons = pygame.mouse.get_pressed()
+            self.block_editor.handle_input(mouse_pos, mouse_buttons, [])
 
         elif self.state == STATE_PLAYING:
             # Get input
@@ -188,6 +203,9 @@ class Game:
 
         elif self.state == STATE_EDITOR:
             self.character_designer.draw(self.screen)
+
+        elif self.state == 'block_editor':
+            self.block_editor.draw(self.screen)
 
         elif self.state == STATE_PLAYING:
             # Draw level

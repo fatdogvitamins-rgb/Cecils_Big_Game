@@ -13,6 +13,7 @@ from src.ui import HUD, Menu, PauseMenu
 from src.sprite_manager import SpriteManager
 from src.tinkercad_editor import CharacterDesigner
 from src.block_editor import BlockEditor
+from src.audio_manager import AudioManager
 
 
 class Game:
@@ -28,6 +29,9 @@ class Game:
         self.state = STATE_MENU
         self.current_level_number = START_LEVEL
         self.fullscreen = False
+
+        # Initialize audio manager
+        self.audio_manager = AudioManager()
 
         # Initialize sprite manager
         self.sprite_manager = SpriteManager()
@@ -86,10 +90,13 @@ class Game:
                 if self.state == STATE_MENU:
                     if event.key == pygame.K_UP:
                         self.menu.selected_button = (self.menu.selected_button - 1) % len(self.menu.buttons)
+                        self.audio_manager.play_menu_select()
                     elif event.key == pygame.K_DOWN:
                         self.menu.selected_button = (self.menu.selected_button + 1) % len(self.menu.buttons)
+                        self.audio_manager.play_menu_select()
                     elif event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         action = self.menu.buttons[self.menu.selected_button]['action']
+                        self.audio_manager.play_menu_select()
                         if action == 'start':
                             self.start_new_game()
                         elif action == 'designer':
@@ -146,14 +153,25 @@ class Game:
             # Update player
             self.player.update(gravity=True)
 
+            # Play jump sound if jump just happened
+            if self.player.is_jumping and not self.player.jump_sound_played:
+                self.audio_manager.play_jump()
+                self.player.jump_sound_played = True
+
             # Check platform collisions
             self.level.platforms.check_collisions(self.player)
+
+            # Play land sound when landing (transition from not on ground to on ground)
+            if self.player.on_ground and not self.player.land_sound_played:
+                self.audio_manager.play_land()
+                self.player.land_sound_played = True
 
             # Update level
             self.level.update(self.player)
 
             # Check level complete
             if self.level.is_complete():
+                self.audio_manager.play_level_complete()
                 self.state = STATE_LEVEL_COMPLETE
                 return
 
@@ -161,6 +179,7 @@ class Game:
             if self.player.y > SCREEN_HEIGHT:
                 self.player.take_damage()
                 if self.player.health <= 0:
+                    self.audio_manager.play_game_over()
                     self.state = STATE_GAME_OVER
                 else:
                     # Reset to level start
@@ -170,7 +189,9 @@ class Game:
             collided_enemies = self.level.enemies.check_collisions(self.player)
             for enemy in collided_enemies:
                 self.player.take_damage()
+                self.audio_manager.play_enemy_defeat()
                 if self.player.health <= 0:
+                    self.audio_manager.play_game_over()
                     self.state = STATE_GAME_OVER
 
         elif self.state == STATE_LEVEL_COMPLETE:

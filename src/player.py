@@ -40,6 +40,8 @@ class Player(pygame.sprite.Sprite):
         self.sprite_manager = sprite_manager
         self.animation_frame = 0
         self.animation_counter = 0
+        self.jump_sound_played = False  # Track if jump sound was played
+        self.land_sound_played = False  # Track if land sound was played
 
         # Create player animation frames
         self.idle_frames = sprite_manager.create_animated_sprite(self.width, self.height, 4, (100, 150, 255))
@@ -83,11 +85,15 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = True
         self.on_ground = False
         self.can_double_jump = True
+        self.jump_sound_played = False  # Reset for next jump sound
+        self.land_sound_played = False  # Will need to play land sound later
 
     def double_jump(self):
         """Execute double jump"""
         self.velocity_y = -self.jump_power
         self.can_double_jump = False
+        self.jump_sound_played = False  # Reset for next jump sound
+        self.land_sound_played = False  # Will need to play land sound later
 
     def apply_gravity(self):
         """Apply gravity to player"""

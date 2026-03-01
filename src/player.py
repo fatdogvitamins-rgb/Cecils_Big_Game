@@ -56,22 +56,22 @@ class Player(pygame.sprite.Sprite):
         Handle keyboard input for player movement
 
         Args:
-            keys: Pygame keys dict
+            keys: Pygame keys tuple from pygame.key.get_pressed()
         """
         self.velocity_x = 0
 
         # Left movement
-        if any(keys.get_pressed()[pygame.K_LEFT] for _ in [1]) or any(k in ['a', 'A'] for k in [chr(k) for k in range(256) if keys.get_pressed()[k]]):
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.velocity_x = -self.move_speed
             self.facing_right = False
 
         # Right movement
-        if any(keys.get_pressed()[pygame.K_RIGHT] for _ in [1]) or any(k in ['d', 'D'] for k in [chr(k) for k in range(256) if keys.get_pressed()[k]]):
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.velocity_x = self.move_speed
             self.facing_right = True
 
         # Jump
-        if keys.get_pressed()[pygame.K_SPACE] or keys.get_pressed()[pygame.K_UP] or keys.get_pressed()[pygame.K_w]:
+        if keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]:
             if self.on_ground and not self.is_jumping:
                 self.jump()
             elif self.can_double_jump and not self.on_ground and not self.on_wall:

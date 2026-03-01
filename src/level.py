@@ -114,20 +114,24 @@ class Level:
         # Starting platform
         self.platforms.create_platform(50, 600, 150, 20, self.sprite_manager)
 
-        # Jump platforms
-        self.platforms.create_platform(300, 500, 100, 20, self.sprite_manager)
-        self.platforms.create_platform(550, 400, 100, 20, self.sprite_manager)
-        self.platforms.create_platform(800, 500, 100, 20, self.sprite_manager)
+        # Close jump platforms - easy difficulty
+        self.platforms.create_platform(220, 550, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(340, 480, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(460, 420, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(580, 360, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(700, 300, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(820, 350, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(940, 280, 100, 20, self.sprite_manager)
 
         # Goal platform
-        self.platforms.create_platform(1100, 300, 120, 20, self.sprite_manager)
+        self.platforms.create_platform(1050, 220, 150, 20, self.sprite_manager)
 
         # Simple enemy with rule-based AI
-        enemy = self.enemies.create_enemy(400, 550, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        enemy = self.enemies.create_enemy(350, 500, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
         enemy.ai_engine = AIEngine(enemy, AIType.RULE_BASED)
 
         # Goal
-        self.goal = pygame.Rect(1100, 250, 120, 50)
+        self.goal = pygame.Rect(1050, 170, 150, 50)
 
     def load_level_1(self):
         """Load level 1 - Platform jumping"""
@@ -137,60 +141,75 @@ class Level:
         # Starting platform
         self.platforms.create_platform(50, 600, 120, 20, self.sprite_manager)
 
-        # Ascending platforms
-        for i in range(5):
-            x = 200 + i * 180
-            y = 550 - i * 80
-            self.platforms.create_platform(x, y, 120, 20, self.sprite_manager)
+        # Ascending platforms - closer spacing
+        platforms_data = [
+            (180, 550),
+            (310, 500),
+            (440, 450),
+            (570, 400),
+            (700, 350),
+        ]
+        for x, y in platforms_data:
+            self.platforms.create_platform(x, y, 100, 20, self.sprite_manager)
 
-        # Moving platform
-        moving_plat = self.platforms.create_platform(700, 300, 150, 20, self.sprite_manager, True)
-        moving_plat.set_movement("horizontal", 200, 2)
+        # Moving platform for challenge
+        moving_plat = self.platforms.create_platform(750, 300, 150, 20, self.sprite_manager, True)
+        moving_plat.set_movement("horizontal", 150, 2)
+
+        # Approach to final platform
+        self.platforms.create_platform(880, 280, 100, 20, self.sprite_manager)
 
         # Final platform
-        self.platforms.create_platform(1100, 200, 120, 20, self.sprite_manager)
+        self.platforms.create_platform(1050, 200, 120, 20, self.sprite_manager)
 
         # Enemies with different AI types
-        patrol_enemy = self.enemies.create_enemy(300, 550, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        patrol_enemy = self.enemies.create_enemy(300, 500, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
         patrol_enemy.ai_engine = AIEngine(patrol_enemy, AIType.RULE_BASED)
 
-        chase_enemy = self.enemies.create_enemy(900, 400, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
+        chase_enemy = self.enemies.create_enemy(750, 280, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
         chase_enemy.ai_engine = AIEngine(chase_enemy, AIType.BEHAVIOR_TREE)
 
         # Goal
-        self.goal = pygame.Rect(1100, 150, 120, 50)
+        self.goal = pygame.Rect(1050, 150, 120, 50)
 
     def load_level_2(self):
         """Load level 2 - Advanced challenge"""
         # Ground
         self.platforms.create_platform(0, SCREEN_HEIGHT - 40, SCREEN_WIDTH, 40, self.sprite_manager)
 
-        # Section 1 - Jumping challenge
+        # Section 1 - Starting area
         self.platforms.create_platform(50, 600, 100, 20, self.sprite_manager)
-        for i in range(4):
-            self.platforms.create_platform(200 + i * 100, 550 - i * 50, 80, 20, self.sprite_manager)
+        self.platforms.create_platform(160, 550, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(270, 500, 100, 20, self.sprite_manager)
 
-        # Section 2 - Moving platforms
-        for i in range(3):
-            plat = self.platforms.create_platform(600 + i * 200, 400, 120, 20, self.sprite_manager, True)
-            plat.set_movement("vertical", 150, 1.5)
+        # Section 2 - Moving platforms challenge
+        moving1 = self.platforms.create_platform(380, 420, 100, 20, self.sprite_manager, True)
+        moving1.set_movement("vertical", 120, 1.5)
 
-        # Section 3 - Final challenge
-        self.platforms.create_platform(1000, 280, 100, 20, self.sprite_manager)
-        self.platforms.create_platform(1100, 220, 100, 20, self.sprite_manager)
+        moving2 = self.platforms.create_platform(490, 380, 100, 20, self.sprite_manager, True)
+        moving2.set_movement("vertical", 100, 1.8)
 
-        # Enemies - Multiple with varied AI types
-        for i in range(3):
-            patrol_enemy = self.enemies.create_enemy(300 + i * 200, 540, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
-            # Use different AI types for variety
-            ai_type = [AIType.RULE_BASED, AIType.BEHAVIOR_TREE, AIType.MACHINE_LEARNING][i]
-            patrol_enemy.ai_engine = AIEngine(patrol_enemy, ai_type)
+        moving3 = self.platforms.create_platform(600, 340, 100, 20, self.sprite_manager, True)
+        moving3.set_movement("horizontal", 150, 2)
 
-        chase_enemy = self.enemies.create_enemy(750, 350, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
-        chase_enemy.ai_engine = AIEngine(chase_enemy, AIType.MACHINE_LEARNING)
+        # Section 3 - Final stretch
+        self.platforms.create_platform(710, 300, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(820, 340, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(930, 280, 100, 20, self.sprite_manager)
+        self.platforms.create_platform(1050, 200, 120, 20, self.sprite_manager)
+
+        # Enemies - spread throughout
+        enemy1 = self.enemies.create_enemy(200, 530, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        enemy1.ai_engine = AIEngine(enemy1, AIType.RULE_BASED)
+
+        enemy2 = self.enemies.create_enemy(500, 350, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "chase")
+        enemy2.ai_engine = AIEngine(enemy2, AIType.BEHAVIOR_TREE)
+
+        enemy3 = self.enemies.create_enemy(850, 300, ENEMY_WIDTH, ENEMY_HEIGHT, self.sprite_manager, "patrol")
+        enemy3.ai_engine = AIEngine(enemy3, AIType.MACHINE_LEARNING)
 
         # Goal
-        self.goal = pygame.Rect(1100, 170, 100, 50)
+        self.goal = pygame.Rect(1050, 150, 120, 50)
 
     def update(self, player):
         """

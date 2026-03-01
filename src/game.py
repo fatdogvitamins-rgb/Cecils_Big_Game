@@ -11,6 +11,7 @@ from src.enemy import EnemyGroup
 from src.level import Level
 from src.ui import HUD, Menu, PauseMenu
 from src.sprite_manager import SpriteManager
+from src.tinkercad_editor import CharacterDesigner
 
 
 class Game:
@@ -36,6 +37,7 @@ class Game:
         self.hud = HUD(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.pause_menu = PauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.character_designer = CharacterDesigner(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.fps_clock = pygame.time.Clock()
 
     def start_new_game(self):
@@ -87,8 +89,20 @@ class Game:
                         action = self.menu.buttons[self.menu.selected_button]['action']
                         if action == 'start':
                             self.start_new_game()
+                        elif action == 'designer':
+                            self.state = STATE_EDITOR
+                        elif action == 'editor':
+                            self.state = 'block_editor'
                         elif action == 'quit':
                             self.running = False
+
+                elif self.state == STATE_EDITOR:
+                    if event.key == pygame.K_ESCAPE:
+                        self.state = STATE_MENU
+                        self.menu.selected_button = 0
+                    elif event.key == pygame.K_s:
+                        self.character_designer.save_design()
+
 
                 elif self.state == STATE_PLAYING:
                     if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
@@ -103,6 +117,11 @@ class Game:
         if self.state == STATE_MENU:
             # Menu input handled in draw
             pass
+
+        elif self.state == STATE_EDITOR:
+            # Character designer update
+            keys = pygame.key.get_pressed()
+            self.character_designer.handle_input(keys, [])
 
         elif self.state == STATE_PLAYING:
             # Get input
@@ -166,6 +185,9 @@ class Game:
 
         if self.state == STATE_MENU:
             self.menu.draw(self.screen)
+
+        elif self.state == STATE_EDITOR:
+            self.character_designer.draw(self.screen)
 
         elif self.state == STATE_PLAYING:
             # Draw level

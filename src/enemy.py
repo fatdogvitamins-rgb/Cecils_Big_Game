@@ -85,10 +85,17 @@ class Enemy(pygame.sprite.Sprite):
             elif self.ai_type == "patrol_vertical":
                 self.patrol_vertical()
 
+        # Apply gravity
+        self.apply_gravity()
+
         # Update position
         self.x += self.velocity_x
         self.y += self.velocity_y
         self.rect.topleft = (self.x, self.y)
+
+        # Check platform collisions
+        if platforms:
+            self.check_platform_collisions(platforms)
 
         self.animation_counter += 0.1
         if self.animation_counter >= 1:
@@ -102,6 +109,45 @@ class Enemy(pygame.sprite.Sprite):
         if abs(self.x - self.start_x) > self.patrol_range:
             self.patrol_direction *= -1
             self.velocity_x = self.speed * self.patrol_direction
+
+    def apply_gravity(self):
+        """Apply gravity to enemy"""
+        if not self.on_ground:
+            self.velocity_y += GRAVITY
+            if self.velocity_y > MAX_FALL_SPEED:
+                self.velocity_y = MAX_FALL_SPEED
+        else:
+            self.velocity_y = 0  # Stop falling when on ground
+
+    def check_platform_collisions(self, platforms):
+        """
+        Check collision with platforms and prevent passing through
+
+        Args:
+            platforms: PlatformGroup to check collisions with
+        """
+        self.on_ground = False
+
+        for platform in platforms:
+            if self.rect.colliderect(platform.rect):
+                # Check if enemy is falling onto platform from above
+                if self.velocity_y >= 0 and self.rect.bottom <= platform.rect.bottom:
+                    # Land on top of platform
+                    self.y = platform.rect.top - self.height
+                    self.rect.topleft = (self.x, self.y)
+                    self.velocity_y = 0
+                    self.on_ground = True
+
+                # Prevent passing through sides
+                elif self.velocity_x > 0:  # Moving right
+                    self.x = platform.rect.left - self.width
+                    self.rect.topleft = (self.x, self.y)
+                    self.velocity_x = 0
+
+                elif self.velocity_x < 0:  # Moving left
+                    self.x = platform.rect.right
+                    self.rect.topleft = (self.x, self.y)
+                    self.velocity_x = 0
 
     def patrol_vertical(self):
         """Patrol up and down vertically"""

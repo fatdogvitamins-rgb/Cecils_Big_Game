@@ -62,15 +62,15 @@ class Player(pygame.sprite.Sprite):
         """
         self.velocity_x = 0
 
-        # Left movement
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.velocity_x = -self.move_speed
-            self.facing_right = False
-
         # Right movement
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.velocity_x = self.move_speed
             self.facing_right = True
+
+        # Left movement
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.velocity_x = -self.move_speed
+            self.facing_right = False
 
         # Jump
         if keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]:

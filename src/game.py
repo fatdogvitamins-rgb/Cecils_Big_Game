@@ -9,7 +9,7 @@ from src.player import Player
 from src.platform import PlatformGroup
 from src.enemy import EnemyGroup
 from src.level import Level
-from src.ui import HUD, Menu, PauseMenu
+from src.ui import HUD, Menu, PauseMenu, BackstoryScreen
 from src.sprite_manager import SpriteManager
 from src.tinkercad_editor import CharacterDesigner
 from src.block_editor import BlockEditor
@@ -46,6 +46,7 @@ class Game:
         self.hud = HUD(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.pause_menu = PauseMenu(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.backstory_screen = BackstoryScreen(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.character_designer = CharacterDesigner(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.block_editor = BlockEditor(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.block_editor.create_example_ai()
@@ -141,6 +142,18 @@ class Game:
                     if event.key == pygame.K_p or event.key == pygame.K_ESCAPE:
                         self.state = STATE_PLAYING
 
+                elif self.state == STATE_BACKSTORY:
+                    # space advances lines or skips to menu
+                    if event.key == pygame.K_SPACE:
+                        if self.backstory_screen.finished:
+                            self.state = STATE_MENU
+                        else:
+                            # jump to next line immediately
+                            self.backstory_screen.current_line += 1
+                            self.backstory_screen.char_index = 0
+                            self.backstory_screen.display_text = ""
+                            self.backstory_screen.last_update = pygame.time.get_ticks()
+
     def update(self):
         """Update game logic"""
         # Update transitions
@@ -149,6 +162,13 @@ class Game:
         if self.state == STATE_MENU:
             # Menu input handled in draw
             pass
+
+        elif self.state == STATE_BACKSTORY:
+            self.backstory_screen.update()
+            if self.backstory_screen.finished:
+                # a short pause then return to menu
+                self.state = STATE_MENU
+                self.menu.selected_button = 0
 
         elif self.state == STATE_EDITOR:
             # Character designer update
@@ -266,6 +286,9 @@ class Game:
             self.level.draw(self.screen)
             self.screen.blit(self.player.image, self.player.rect)
             self.pause_menu.draw(self.screen)
+
+        elif self.state == STATE_BACKSTORY:
+            self.backstory_screen.draw(self.screen)
 
         elif self.state == STATE_LEVEL_COMPLETE:
             # Draw completion screen

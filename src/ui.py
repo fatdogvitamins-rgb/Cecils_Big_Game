@@ -287,3 +287,80 @@ class PauseMenu:
         resume_text = self.font_medium.render("Press P or ESC to Resume", True, COLOR_WHITE)
         resume_rect = resume_text.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 50))
         surface.blit(resume_text, resume_rect)
+
+
+class BackstoryScreen:
+    """Backstory screen that displays the game's narrative"""
+
+    def __init__(self, screen_width: int = SCREEN_WIDTH, screen_height: int = SCREEN_HEIGHT):
+        """
+        Initialize backstory screen
+
+        Args:
+            screen_width: Screen width
+            screen_height: Screen height
+        """
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.font_large = pygame.font.Font(None, 48)
+        self.font_medium = pygame.font.Font(None, 36)
+        self.font_small = pygame.font.Font(None, 24)
+        self.text_lines = BACKSTORY_TEXT
+        self.current_line = 0
+        self.char_index = 0
+        self.display_text = ""
+        self.line_delay = 2000  # 2 seconds between lines
+        self.char_delay = 50    # 50ms between characters
+        self.last_update = pygame.time.get_ticks()
+        self.finished = False
+
+    def update(self):
+        """Update typing of backstory"""
+        current_time = pygame.time.get_ticks()
+        if self.current_line < len(self.text_lines):
+            line = self.text_lines[self.current_line]
+            if line == "":
+                if current_time - self.last_update > self.line_delay // 2:
+                    self.current_line += 1
+                    self.char_index = 0
+                    self.display_text = ""
+                    self.last_update = current_time
+            elif self.char_index < len(line):
+                if current_time - self.last_update > self.char_delay:
+                    self.char_index += 1
+                    self.display_text = line[:self.char_index]
+                    self.last_update = current_time
+            else:
+                if current_time - self.last_update > self.line_delay:
+                    self.current_line += 1
+                    self.char_index = 0
+                    self.display_text = ""
+                    self.last_update = current_time
+        else:
+            self.finished = True
+
+    def draw(self, surface: pygame.Surface):
+        """Render backstory text to screen"""
+        surface.fill(COLOR_BLACK)
+        title = self.font_large.render("CECIL'S BIG GAME", True, COLOR_CYAN)
+        title_rect = title.get_rect(center=(self.screen_width // 2, 80))
+        surface.blit(title, title_rect)
+        subtitle = self.font_medium.render("A Cinematic Experience", True, COLOR_WHITE)
+        subtitle_rect = subtitle.get_rect(center=(self.screen_width // 2, 130))
+        surface.blit(subtitle, subtitle_rect)
+
+        if self.display_text:
+            y = 200
+            for line in self.display_text.split("\n"):
+                if line.strip():
+                    txt = self.font_medium.render(line, True, COLOR_WHITE)
+                    rect = txt.get_rect(center=(self.screen_width // 2, y))
+                    surface.blit(txt, rect)
+                    y += 50
+
+        if not self.finished:
+            progress = self.font_small.render("Press SPACE to skip...", True, COLOR_GRAY)
+        else:
+            progress = self.font_small.render("Press SPACE to continue...", True, COLOR_CYAN)
+        prog_rect = progress.get_rect(center=(self.screen_width // 2, self.screen_height - 50))
+        surface.blit(progress, prog_rect)

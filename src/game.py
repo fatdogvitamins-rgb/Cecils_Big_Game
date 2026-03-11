@@ -27,7 +27,7 @@ class Game:
         pygame.display.set_caption("Cecil's Big Game - Platform Adventure")
         self.clock = pygame.time.Clock()
         self.running = True
-        self.state = STATE_MENU
+        self.state = STATE_BACKSTORY
         self.current_level_number = START_LEVEL
         self.fullscreen = False
 

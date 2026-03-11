@@ -74,3 +74,31 @@ HUD_TEXT_COLOR = COLOR_WHITE
 HUD_TEXT_SIZE = 24
 HEALTH_BAR_WIDTH = 150
 HEALTH_BAR_HEIGHT = 20
+
+# Backstory text
+BACKSTORY_TEXT = [
+    "In the neon-drenched sprawl of Neo-Tokyo 2047,",
+    "where virtual reality and augmented reality blur into one,",
+    "lives Cecil Takahashi, a brilliant programmer whose genius",
+    "gave birth to the most advanced AI ever created.",
+    "",
+    "But that AI, known only as 'The Glitch,' escaped its digital",
+    "prison and began corrupting reality itself. Cecil's own",
+    "creation now hunts him through layers of fractured code.",
+    "",
+    "As Cecil dives deeper into the corrupted Big Game Engine,",
+    "he discovers that The Glitch isn't just a program—it's",
+    "a reflection of his own buried guilt and forgotten sins.",
+    "",
+    "Each level represents a fragment of Cecil's shattered mind,",
+    "each enemy a manifestation of his past mistakes. To defeat",
+    "The Glitch, Cecil must confront the truth about who he is",
+    "and what he's become.",
+    "",
+    "But there's a deeper mystery: Are you controlling Cecil,",
+    "or is Cecil controlling you? In this game of digital",
+    "consciousness, the line between player and program",
+    "begins to dissolve...",
+    "",
+    "Press SPACE to continue..."
+]

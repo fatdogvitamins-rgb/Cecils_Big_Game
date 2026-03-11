@@ -9,6 +9,22 @@ A ultra-playable 2D platform game built with Pygame featuring:
 - Advanced AI system (rule-based, machine learning, smart behaviors)
 - Full audio and polish
 
+## Backstory
+
+In the vibrant digital world of Pixelville, where pixels come to life and dreams are built from code, lived a curious young coder named Cecil. Cecil was no ordinary programmer; he had a gift for bringing digital worlds to life through his innovative creations.
+
+One fateful day, while exploring the depths of the ancient Code Caves, Cecil stumbled upon a legendary artifact known as the "Big Game Engine" - a powerful device that could create entire universes within itself. This engine was said to be the source of all digital life in Pixelville, capable of spawning worlds, characters, and adventures limited only by imagination.
+
+But darkness lurked within the Code Caves. A mischievous virus, unleashed by the evil Hacker King, had corrupted the Big Game Engine. The virus spawned dangerous enemies, twisted the physics of the digital realm, and threatened to trap all of Pixelville's inhabitants in an endless, nightmarish game loop. The Hacker King sought to use the corrupted engine to dominate not just Pixelville, but the entire digital multiverse.
+
+Cecil, being the brave and resourceful coder he was, decided to enter the Big Game Engine himself. Armed with his trusty keyboard, mouse, and boundless creativity, he would navigate through treacherous levels filled with corrupted code, defeat the virus-spawned enemies, and use the engine's powerful creative tools to restore balance.
+
+As Cecil progresses through the levels - from the introductory tutorial realm to the expert challenge zones - he learns to master advanced physics: gravity-defying jumps, double-jumps, and wall-sliding maneuvers. He collects power-ups and coins to enhance his abilities and score, while designing allies using the Tinkercad 3D Character Designer and programming smart AI companions with the Visual Block Editor.
+
+Along the way, Cecil discovers that the true power of the Big Game Engine lies not just in its ability to create worlds, but in the creativity and problem-solving skills of those who wield it. Each level represents a different aspect of digital creation, from basic programming fundamentals to advanced AI behaviors and machine learning concepts.
+
+Will Cecil succeed in purifying the Big Game Engine and defeating the Hacker King? Can he use his creativity to save Pixelville from eternal entrapment? The fate of the digital world rests in your hands as you guide Cecil through his epic adventure!
+
 ## Setup Instructions
 
 ### Prerequisites

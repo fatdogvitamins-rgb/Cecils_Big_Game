@@ -101,5 +101,9 @@ BACKSTORY_TEXT = [
     "consciousness, the line between player and program",
     "begins to dissolve...",
     "Oh by the way, i am Cecil!, and you are playing as me! Or are you? I don't know anymore.",
-    "Press SPACE to continue..."
+    "Press SPACE to continue...",
+    "fatdogvitamins@outlook.com!, if you have any questions or want to chat about the game, feel free to reach out!",
+    "But remember, kids! Dont take this game too seriously! It's just a fun project I made to learn how to code and make games!",
+    "I hope you enjoy playing it as much as I enjoyed making it! And if you have any feedback or suggestions, please let me know! I'm always looking to improve and make the game better! Thanks for playing!",
+    "Feel free to edit and modify the game as you like! The source code is open and available for anyone to use and learn from! Just remember to give credit where credit is due, and have fun with it! Happy coding!"
 ]

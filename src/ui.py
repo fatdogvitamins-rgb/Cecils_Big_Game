@@ -309,7 +309,7 @@ class BackstoryScreen:
         self.current_line = 0
         self.char_index = 0
         self.display_text = ""
-        self.line_delay = 2000  # 2 seconds between lines
+        self.line_delay = 1000.5000  # 1.5 seconds between lines
         self.char_delay = 50    # 50ms between characters
         self.last_update = pygame.time.get_ticks()
         self.finished = False

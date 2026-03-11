@@ -63,6 +63,7 @@ STATE_PAUSED = "paused"
 STATE_GAME_OVER = "game_over"
 STATE_LEVEL_COMPLETE = "level_complete"
 STATE_EDITOR = "editor"
+STATE_BACKSTORY = "backstory"
 
 # Levels
 NUM_LEVELS = 3
